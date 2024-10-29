@@ -3,12 +3,32 @@ from email.message import EmailMessage
 from tkinter import *
 from tkinter import messagebox as mb
 
-password = 'bbkmvoxkvuudfltc'
+""" password = 'bbkmvoxkvuudfltc'
 from_email = 'oleg@pinco.ru'
 to_email = 'olegpod@gmail.com'
+ """
+
+
+def save():
+    with open('info_email.txt', 'w', encoding='utf-8') as file:
+        file.write(f'{from_email_entry.get()}\n')
+        file.write(f'{to_email_entry.get()}\n')
+        file.write(f'{pass_entry.get()}\n')
+
+
+def load():
+    try:
+        with open('info_email.txt', 'r') as file:
+            list_data = file.readlines()
+            from_email_entry.insert(0, list_data[0].strip())
+            to_email_entry.insert(0, list_data[1].strip())
+            pass_entry.insert(0, list_data[2].strip())
+    except FileNotFoundError:
+        pass
 
 
 def send_message():
+    save()
     password = pass_entry.get()
     from_email = from_email_entry.get()
     to_email = to_email_entry.get()
@@ -39,6 +59,7 @@ window = Tk()
 window.title('Отправка письма')
 window.geometry('600x350')
 
+
 text_from = Label(window, text='От кого:', font=('Arial', 14))
 text_from.grid(row=0, column=0, pady=5)
 
@@ -63,6 +84,8 @@ mess_text = Label(window, text='Сообщение:', font=('Arial', 14))
 mess_text.grid(row=4, column=0, pady=5)
 mess_entry = Text(window, font=('Arial', 14), width=30, height=6)
 mess_entry.grid(row=4, column=1, pady=5)
+
+load()
 
 btn = Button(window, text='Отправить', font=(
     'Arial', 14), command=send_message)
