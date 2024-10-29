@@ -2,11 +2,17 @@ import smtplib
 from email.message import EmailMessage
 from tkinter import *
 from tkinter import messagebox as mb
+from email.utils import parseaddr
 
 """ password = 'bbkmvoxkvuudfltc'
 from_email = 'oleg@pinco.ru'
 to_email = 'olegpod@gmail.com'
  """
+
+
+def validate_email(email):
+    name, addr = parseaddr(email)
+    return '@' in addr and '.' in addr.split('@')[-1]
 
 
 def save():
@@ -32,6 +38,9 @@ def send_message():
     password = pass_entry.get()
     from_email = from_email_entry.get()
     to_email = to_email_entry.get()
+    if not validate_email(from_email) or not validate_email(to_email):
+        result_label.config(text='Неверный формат email', fg='red')
+        return
     title_mes = sub_entry.get()
     text_message = mess_entry.get(1.0, END)
     message = EmailMessage()
@@ -57,31 +66,32 @@ def send_message():
 
 window = Tk()
 window.title('Отправка письма')
-window.geometry('600x350')
+window.geometry('500x400')
 
 
 text_from = Label(window, text='От кого:', font=('Arial', 14))
-text_from.grid(row=0, column=0, pady=5)
+text_from.grid(row=0, column=0, pady=5, sticky=W, padx=[10, 0])
 
 from_email_entry = Entry(window, font=('Arial', 14), width=30)
 from_email_entry.grid(row=0, column=1, pady=5)
 
-Label(window, text='Кому:', font=('Arial', 14)).grid(row=1, column=0, pady=5)
+Label(window, text='Кому:', font=('Arial', 14)).grid(
+    row=1, column=0, pady=5, sticky=W, padx=[10, 0])
 to_email_entry = Entry(window, font=('Arial', 14), width=30)
 to_email_entry.grid(row=1, column=1, pady=5)
 
 text_pass = Label(window, text='Пароль:', font=('Arial', 14))
-text_pass.grid(row=2, column=0, pady=5)
-pass_entry = Entry(window, font=('Arial', 14), width=30)
+text_pass.grid(row=2, column=0, pady=5, sticky=W, padx=[10, 0])
+pass_entry = Entry(window, font=('Arial', 14), width=30, show='*')
 pass_entry.grid(row=2, column=1, pady=5)
 
-text_sub = Label(window, text='Тема сообщения:', font=('Arial', 14))
-text_sub.grid(row=3, column=0, pady=5)
+text_sub = Label(window, text='Тема:', font=('Arial', 14))
+text_sub.grid(row=3, column=0, pady=5, sticky=W, padx=[10, 0])
 sub_entry = Entry(window, font=('Arial', 14), width=30)
 sub_entry.grid(row=3, column=1, pady=5)
 
 mess_text = Label(window, text='Сообщение:', font=('Arial', 14))
-mess_text.grid(row=4, column=0, pady=5)
+mess_text.grid(row=4, column=0, pady=5, sticky=W, padx=[10, 0])
 mess_entry = Text(window, font=('Arial', 14), width=30, height=6)
 mess_entry.grid(row=4, column=1, pady=5)
 
@@ -89,7 +99,9 @@ load()
 
 btn = Button(window, text='Отправить', font=(
     'Arial', 14), command=send_message)
-btn.grid(row=5, column=1)
+btn.grid(row=5, column=1, pady=5)
 
+result_label = Label(window)
+result_label.grid(row=6, column=1, pady=5, sticky=W)
 
 window.mainloop()
