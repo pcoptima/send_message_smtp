@@ -11,8 +11,16 @@ to_email = 'olegpod@gmail.com'
 
 
 def validate_email(email):
-    name, addr = parseaddr(email)
+    if len(email) > 5 and '.' in email.split('@')[-1] and email.count('@') == 1:
+        return True
+    else:
+        return False
+
+
+"""     name, addr = parseaddr(email)
     return '@' in addr and '.' in addr.split('@')[-1]
+
+ """
 
 
 def save():
@@ -34,13 +42,16 @@ def load():
 
 
 def send_message():
-    save()
     password = pass_entry.get()
     from_email = from_email_entry.get()
-    to_email = to_email_entry.get()
-    if not validate_email(from_email) or not validate_email(to_email):
-        result_label.config(text='Неверный формат email', fg='red')
+    if not validate_email(from_email):
+        result_label.config(text='Неверный формат email отправителя', fg='red')
         return
+    to_email = to_email_entry.get()
+    if not validate_email(to_email):
+        result_label.config(text='Неверный формат email получателя', fg='red')
+        return
+    save()
     title_mes = sub_entry.get()
     text_message = mess_entry.get(1.0, END)
     message = EmailMessage()
